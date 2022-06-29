@@ -1,10 +1,8 @@
 import enum
 
-REAL_DATA_PATH = (
-    "/Users/dennisfitzner/Documents/Bacheor/Data/live_logs_ids_bereinigt.csv"
-)
+REAL_DATA_PATH = "data/live_logs_ids_bereinigt.csv"
 
-MINIMAL_SEQUENCE_LENGTH = 1
+MINIMAL_SEQUENCE_LENGTH = 2
 
 
 class ColumnNames(enum.Enum):

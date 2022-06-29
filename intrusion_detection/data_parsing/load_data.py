@@ -3,7 +3,7 @@ from intrusion_detection import constants
 
 
 def load_raw_data(path_to_data: str) -> pd.DataFrame:
-    return sort_by_date(pd.read_csv(path_to_data, sep=";").loc[:10])
+    return sort_by_date(pd.read_csv(path_to_data, sep=";"))
 
 
 def sort_by_date(data: pd.DataFrame) -> pd.DataFrame:
@@ -13,5 +13,5 @@ def sort_by_date(data: pd.DataFrame) -> pd.DataFrame:
     return data.sort_values(by=constants.ColumnNames.DATE.value)
 
 
-def store_dataframe(data: pd.DataFrame, target_directory: str) -> None:
+def store_matrix(data: pd.DataFrame, target_directory: str) -> None:
     data.to_csv(target_directory)
