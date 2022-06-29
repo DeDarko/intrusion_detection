@@ -1,0 +1,10 @@
+import enum
+
+REAL_DATA_PATH = (
+    "/Users/dennisfitzner/Documents/Bacheor/Data/live_logs_ids_bereinigt.csv"
+)
+
+
+class ColumnNames(enum.Enum):
+    SESSION = "connectionid"
+    DATE = "time"

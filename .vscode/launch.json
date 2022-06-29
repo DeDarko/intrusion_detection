@@ -1,0 +1,15 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: Run intrusion_detection",
+            "type": "python",
+            "request": "launch",
+            "program": "intrusion_detection/__main__.py",
+            "args": [
+                "/tmp/test.cvs"
+            ],
+            "console": "integratedTerminal"
+        },
+    ]
+}
