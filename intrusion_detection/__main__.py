@@ -60,14 +60,17 @@ def train_model(data_directory: str, target_directory: str):
     number_of_different_events = x.shape[1]
     regressor = Sequential()
 
-    regressor.add(
-        LSTM(
-            units=50, return_sequences=True, input_shape=(number_of_different_events, 1)
-        )
+    regressor = Sequential(
+        [
+            LSTM(
+                units=50,
+                return_sequences=True,
+                input_shape=(number_of_different_events, 1),
+            ),
+            LSTM(units=50),
+            Dense(units=number_of_different_events, activation="softmax"),
+        ]
     )
-    regressor.add(Dropout(0.2))
-    regressor.add(LSTM(units=50))
-    regressor.add(Dense(units=number_of_different_events, activation="softmax"))
     regressor.compile(
         optimizer=keras.optimizers.RMSprop(learning_rate=0.01),
         loss="sparse_categorical_crossentropy",
