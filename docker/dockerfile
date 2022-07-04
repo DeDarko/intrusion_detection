@@ -2,6 +2,6 @@ FROM python:3.10-buster
 RUN apt-get update -y \
     && apt-get upgrade -y \
     && apt-get install -y libblas3 liblapack3 liblapack-dev libblas-dev gfortran libatlas-base-dev
-#RUN pip install scipy
+RUN pip install poetry
 
 ENTRYPOINT ["tail", "-f", "/dev/null"]
