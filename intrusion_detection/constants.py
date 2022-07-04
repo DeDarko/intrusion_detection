@@ -9,3 +9,4 @@ class ColumnNames(enum.Enum):
     SESSION = "connectionid"
     DATE = "time"
     EVENT = "event"
+    USER = "patientId"

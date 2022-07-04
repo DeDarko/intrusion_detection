@@ -41,3 +41,22 @@ def map_events(events: List[str]) -> List[str]:
         "TC:Services:intrusionDetectionSystem:patient stream subscription": "STREAM",
     }
     return [events_map[event] for event in events]
+
+def extract_user_actions(data: pd.DataFrame) -> List[List[str]]:
+    all_useraction = []
+    for user_id in get_unique_user_ids(data):
+        all_useraction.append(select_user_map_events(data, user_id))
+    return all_useraction
+
+def select_user_map_events(data: pd.DataFrame, userid: str) -> List:
+    return map_events(
+        list(
+            data[data[constants.ColumnNames.USER.value] == userid][
+                constants.ColumnNames.EVENT.value
+            ].values
+        )
+    )
+
+def get_unique_user_ids(data: pd.DataFrame) -> pd.Series:
+    return data[constants.ColumnNames.USER.value].unique()
+
