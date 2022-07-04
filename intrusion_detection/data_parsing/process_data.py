@@ -1,6 +1,9 @@
+from typing import List, Tuple
+
+import numpy as np
 import pandas as pd
 from intrusion_detection import constants
-from typing import List
+from sklearn import preprocessing as sk_preprocessing
 
 
 def extract_sequences(data: pd.DataFrame) -> List[List[str]]:
@@ -14,6 +17,10 @@ def remove_sequence_min_occurences(
     sequences: List[List[str]], min_occurences: int
 ) -> List[List[str]]:
     return [sequence for sequence in sequences if len(sequence) >= min_occurences]
+
+
+def cut_to_max_length(sequences: List[List[str]], max_length: int) -> List[List[str]]:
+    return [sequence[:max_length] for sequence in sequences]
 
 
 def select_session_map_events(data: pd.DataFrame, session: str) -> List:
@@ -31,22 +38,15 @@ def get_unique_session_ids(data: pd.DataFrame) -> pd.Series:
 
 
 def map_events(events: List[str]) -> List[str]:
-    events_map = {
-        "TC:Services:intrusionDetectionSystem:new connection": "CONNECTED",
-        "TC:Services:intrusionDetectionSystem:new patient registered": "REGISTERED",
-        "TC:Services:intrusionDetectionSystem:patient logged in": "LOGGED-IN",
-        "TC:Services:intrusionDetectionSystem:patient logged out": "LOGGED-OUT",
-        "TC:Services:intrusionDetectionSystem:patient manual login": "RESUME",
-        "TC:Services:intrusionDetectionSystem:patient sent message": "SENT-MESSAGE",
-        "TC:Services:intrusionDetectionSystem:patient stream subscription": "STREAM",
-    }
-    return [events_map[event] for event in events]
+    return [constants.EVENTS_MAP[event] for event in events]
+
 
 def extract_user_actions(data: pd.DataFrame) -> List[List[str]]:
     all_useraction = []
     for user_id in get_unique_user_ids(data):
         all_useraction.append(select_user_map_events(data, user_id))
     return all_useraction
+
 
 def select_user_map_events(data: pd.DataFrame, userid: str) -> List:
     return map_events(
@@ -57,6 +57,42 @@ def select_user_map_events(data: pd.DataFrame, userid: str) -> List:
         )
     )
 
+
 def get_unique_user_ids(data: pd.DataFrame) -> pd.Series:
     return data[constants.ColumnNames.USER.value].unique()
 
+
+def label_encode_sequences(
+    sequences: List[List[str]],
+) -> Tuple[List[List[int]], sk_preprocessing.LabelEncoder]:
+    label_encoder = sk_preprocessing.LabelEncoder()
+    label_encoder.fit(
+        list(constants.EVENTS_MAP.values()) + [constants.PADDING_TOKEN_NAME]
+    )
+
+    label_encoded_sequences = [
+        list(label_encoder.transform(sequence)) for sequence in sequences
+    ]
+    return (label_encoded_sequences, label_encoder)
+
+
+def pad_sequences_to_same_length(
+    sequences: List[List[int]], required_length: int, padding_int: int
+) -> List[List[int]]:
+    return [
+        sequence + [padding_int] * (required_length - len(sequence))
+        for sequence in sequences
+    ]
+
+
+def sequence_to_matrix(sequences: List[List[str]]) -> np.array:
+    return np.array(sequences)
+
+
+def extract_and_remove_targets_from_sequence(
+    sequences: List[List[str]],
+) -> Tuple[List[List[str]], List[str]]:
+    return (
+        [sequence[:-1] for sequence in sequences],
+        [sequence[-1] for sequence in sequences],
+    )
