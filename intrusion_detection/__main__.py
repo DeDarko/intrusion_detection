@@ -58,25 +58,21 @@ def train_model(data_directory: str, target_directory: str):
     x = np.load(pathlib.Path(target_directory) / "X.npy")
 
     number_of_different_events = x.shape[1]
-    regressor = Sequential()
-
-    regressor = Sequential(
+    intrusion_detector = Sequential(
         [
             LSTM(
                 units=50,
-                return_sequences=True,
                 input_shape=(number_of_different_events, 1),
             ),
-            LSTM(units=50),
             Dense(units=number_of_different_events, activation="softmax"),
         ]
     )
-    regressor.compile(
+    intrusion_detector.compile(
         optimizer=keras.optimizers.RMSprop(learning_rate=0.01),
         loss="sparse_categorical_crossentropy",
     )
 
-    regressor.fit(x, y[:, np.newaxis], epochs=100, batch_size=32)
+    intrusion_detector.fit(x, y[:, np.newaxis], epochs=100, batch_size=32)
 
 
 if __name__ == "__main__":
