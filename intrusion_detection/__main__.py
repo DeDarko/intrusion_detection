@@ -3,6 +3,7 @@ import pathlib
 import numpy as np
 import pandas as pd
 import typer
+from tensorflow import keras
 from tensorflow.keras.layers import LSTM, Dense, Dropout
 from tensorflow.keras.models import Sequential
 
@@ -71,7 +72,10 @@ def train_model(data_directory: str, target_directory: str):
     regressor.add(Dropout(0.25))
     regressor.add(LSTM(units=50))
     regressor.add(Dense(units=number_of_different_events, activation="softmax"))
-    regressor.compile(optimizer="adam", loss="sparse_categorical_crossentropy")
+    regressor.compile(
+        optimizer=keras.optimizers.RMSprop(learning_rate=0.01),
+        loss="sparse_categorical_crossentropy",
+    )
 
     regressor.fit(x, y[:, np.newaxis], epochs=100, batch_size=32)
 
