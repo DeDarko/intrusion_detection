@@ -1,7 +1,7 @@
 import enum
 
+# Data preprocessing.
 REAL_DATA_PATH = "data/live_logs_ids_bereinigt.csv"
-
 MINIMAL_SEQUENCE_LENGTH = 2
 MAXIMAL_SEQUENCE_LENGTH = 30
 
@@ -24,3 +24,8 @@ EVENTS_MAP = {
 }
 
 PADDING_TOKEN_NAME = "DISCONNECT(DETECTED)"
+
+# Model training
+LEARNING_RATE = 0.01
+N_EPOCHS = 100
+BATCH_SIZE = 32

@@ -68,11 +68,13 @@ def train_model(data_directory: str, target_directory: str):
         ]
     )
     intrusion_detector.compile(
-        optimizer=keras.optimizers.RMSprop(learning_rate=0.01),
+        optimizer=keras.optimizers.RMSprop(learning_rate=constants.LEARNING_RATE),
         loss="sparse_categorical_crossentropy",
     )
 
-    intrusion_detector.fit(x, y[:, np.newaxis], epochs=100, batch_size=32)
+    intrusion_detector.fit(
+        x, y[:, np.newaxis], epochs=constants.N_EPOCHS, batch_size=constants.BATCH_SIZE
+    )
 
 
 if __name__ == "__main__":
