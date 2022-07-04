@@ -57,7 +57,7 @@ def train_model(data_directory: str, target_directory: str):
     y = np.load(pathlib.Path(data_directory) / "y.npy")
     x = np.load(pathlib.Path(target_directory) / "X.npy")
 
-    number_of_different_events = x.shape[1]
+    number_of_sequence, number_of_different_events = x.shape
     intrusion_detector = Sequential(
         [
             LSTM(
