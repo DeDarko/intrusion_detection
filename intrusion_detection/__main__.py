@@ -56,20 +56,24 @@ def train_model(data_directory: str, target_directory: str):
     y = np.load(pathlib.Path(data_directory) / "y.npy")
     x = np.load(pathlib.Path(target_directory) / "X.npy")
 
+    number_of_different_events = x.shape[1]
     regressor = Sequential()
 
-    regressor.add(LSTM(units=50, return_sequences=True, input_shape=(x.shape[1], 1)))
+    regressor.add(
+        LSTM(
+            units=50, return_sequences=True, input_shape=(number_of_different_events, 1)
+        )
+    )
     regressor.add(Dropout(0.2))
     regressor.add(LSTM(units=50, return_sequences=True))
     regressor.add(Dropout(0.25))
     regressor.add(LSTM(units=50, return_sequences=True))
     regressor.add(Dropout(0.25))
     regressor.add(LSTM(units=50))
-    regressor.add(Dropout(0.25))
-    regressor.add(Dense(units=1))
-    regressor.compile(optimizer="adam", loss="mean_squared_error")
+    regressor.add(Dense(units=number_of_different_events, activation="softmax"))
+    regressor.compile(optimizer="adam", loss="sparse_categorical_crossentropy")
 
-    regressor.fit(x, y, epochs=100, batch_size=32)
+    regressor.fit(x, y[:, np.newaxis], epochs=100, batch_size=32)
 
 
 if __name__ == "__main__":
