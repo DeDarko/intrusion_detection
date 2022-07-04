@@ -66,10 +66,6 @@ def train_model(data_directory: str, target_directory: str):
         )
     )
     regressor.add(Dropout(0.2))
-    regressor.add(LSTM(units=50, return_sequences=True))
-    regressor.add(Dropout(0.25))
-    regressor.add(LSTM(units=50, return_sequences=True))
-    regressor.add(Dropout(0.25))
     regressor.add(LSTM(units=50))
     regressor.add(Dense(units=number_of_different_events, activation="softmax"))
     regressor.compile(
