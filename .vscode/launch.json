@@ -11,5 +11,17 @@
             ],
             "console": "integratedTerminal"
         },
+        {
+            "name": "Python: Run model training",
+            "type": "python",
+            "request": "launch",
+            "program": "intrusion_detection/__main__.py",
+            "args": [
+                "train-model",
+                "~/Documents/Bachelor/runs/run-01/",
+                "~/Documents/Bachelor/runs/run-01/"
+            ],
+            "console": "integratedTerminal"
+        },
     ]
 }

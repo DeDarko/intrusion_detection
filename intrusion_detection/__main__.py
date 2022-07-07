@@ -1,4 +1,5 @@
 import pathlib
+import pickle
 
 import numpy as np
 import pandas as pd
@@ -50,6 +51,8 @@ def preprocess_data(target_directory: str):
 
     np.save(target_directory / "y.npy", y)
     np.save(target_directory / "X.npy", x)
+    with open(target_directory / "label_encoder.pickle", "wb") as label_encoder_handle:
+        pickle.dump(label_encoder, label_encoder_handle)
 
 
 @intrusion_detection.command()
@@ -57,14 +60,13 @@ def train_model(data_directory: str, target_directory: str):
     y = np.load(pathlib.Path(data_directory) / "y.npy")
     x = np.load(pathlib.Path(target_directory) / "X.npy")
 
-    number_of_sequence, number_of_different_events = x.shape
+    _number_of_sequence, sequence_length = x.shape
     intrusion_detector = Sequential(
         [
             LSTM(
                 units=50,
-                input_shape=(number_of_different_events, 1),
             ),
-            Dense(units=number_of_different_events, activation="softmax"),
+            Dense(units=100, activation="softmax"),
         ]
     )
     intrusion_detector.compile(
@@ -72,9 +74,18 @@ def train_model(data_directory: str, target_directory: str):
         loss="sparse_categorical_crossentropy",
     )
 
+    x_in_training_format = x[:, :, np.newaxis].astype(float)
+
     intrusion_detector.fit(
-        x, y[:, np.newaxis], epochs=constants.N_EPOCHS, batch_size=constants.BATCH_SIZE
+        x_in_training_format,
+        y[:, np.newaxis],
+        epochs=constants.N_EPOCHS,
+        batch_size=constants.BATCH_SIZE,
     )
+    with open(
+        pathlib.Path(target_directory) / "intrusion_detector.pickle", "wb"
+    ) as intrusion_detector_handel:
+        pickle.dump(intrusion_detector_handel, intrusion_detector_handel)
 
 
 if __name__ == "__main__":
