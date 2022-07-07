@@ -13,6 +13,7 @@ from tensorflow.keras.utils import pad_sequences
 
 from intrusion_detection import constants
 from intrusion_detection.data_parsing import load_data, process_data
+from intrusion_detection.model_evaluation import perplexity_computation
 
 intrusion_detection = typer.Typer()
 
@@ -43,6 +44,7 @@ def preprocess_data(target_directory: str):
         sequences=pad_sequences(
             sequences=sequences_x,
             maxlen=constants.MAXIMAL_SEQUENCE_LENGTH,
+            value=len(constants.EVENTS_MAP) + 1.0,
             padding="pre",
         )
     )
@@ -72,11 +74,11 @@ def train_model(data_directory: str, target_directory: str):
 
     intrusion_detector = Sequential(
         [
-            Embedding(input_dim=len(constants.EVENTS_MAP) + 1, output_dim=50),
+            Embedding(input_dim=len(constants.EVENTS_MAP) + 2, output_dim=50),
             LSTM(
                 units=50,
             ),
-            Dense(units=100, activation="softmax"),
+            Dense(units=len(constants.EVENTS_MAP), activation="softmax"),
         ]
     )
     intrusion_detector.compile(
@@ -98,6 +100,31 @@ def train_model(data_directory: str, target_directory: str):
         pathlib.Path(target_directory) / "intrusion_detector.pickle", "wb"
     ) as intrusion_detector_handel:
         pickle.dump(intrusion_detector, intrusion_detector_handel)
+
+
+@intrusion_detection.command()
+def evaluate_perplexity(
+    path_to_model: str,
+    path_to_x: str,
+    path_to_y: str,
+) -> None:
+    with open(path_to_model, "rb") as model_handle:
+        intrusion_detector = pickle.load(model_handle)
+
+    x = np.load(path_to_x)
+    y = np.load(path_to_y)
+
+    data = np.hstack((x, y[:, np.newaxis]))
+
+    average_perplexities = [
+        perplexity_computation.average_perplexity(
+            sequence=data[sample, :],
+            model=intrusion_detector,
+        )
+        for sample in range(data.shape[0])
+    ]
+
+    print(np.array(average_perplexities).mean())
 
 
 if __name__ == "__main__":

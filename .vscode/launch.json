@@ -2,25 +2,38 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Python: Run intrusion_detection",
+            "name": "Data Preprocessing",
             "type": "python",
             "request": "launch",
             "program": "intrusion_detection/__main__.py",
             "args": [
                 "preprocess-data",
-                "~/Documents/Bachelor/runs/run-03/"
+                "~/Documents/Bachelor/runs/run-04/"
             ],
             "console": "integratedTerminal"
         },
         {
-            "name": "Python: Run model training",
+            "name": "Run model training",
             "type": "python",
             "request": "launch",
             "program": "intrusion_detection/__main__.py",
             "args": [
                 "train-model",
-                "~/Documents/Bachelor/runs/run-03/",
-                "~/Documents/Bachelor/runs/run-03/"
+                "~/Documents/Bachelor/runs/run-04/",
+                "~/Documents/Bachelor/runs/run-04/"
+            ],
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "Compute Perplexity Train",
+            "type": "python",
+            "request": "launch",
+            "program": "intrusion_detection/__main__.py",
+            "args": [
+                "evaluate-perplexity",
+                "~/Documents/Bachelor/runs/run-04/intrusion_detector.pickle",
+                "~/Documents/Bachelor/runs/run-04/x_test.npy",
+                "~/Documents/Bachelor/runs/run-04/y_test.npy",
             ],
             "console": "integratedTerminal"
         },
