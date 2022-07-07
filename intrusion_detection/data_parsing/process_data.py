@@ -66,9 +66,7 @@ def label_encode_sequences(
     sequences: List[List[str]],
 ) -> Tuple[List[List[int]], sk_preprocessing.LabelEncoder]:
     label_encoder = sk_preprocessing.LabelEncoder()
-    label_encoder.fit(
-        list(constants.EVENTS_MAP.values()) + [constants.PADDING_TOKEN_NAME]
-    )
+    label_encoder.fit(list(constants.EVENTS_MAP.values()))
 
     label_encoded_sequences = [
         list(label_encoder.transform(sequence)) for sequence in sequences

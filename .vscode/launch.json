@@ -7,7 +7,8 @@
             "request": "launch",
             "program": "intrusion_detection/__main__.py",
             "args": [
-                "/tmp/test.cvs"
+                "preprocess-data",
+                "~/Documents/Bachelor/runs/run-03/"
             ],
             "console": "integratedTerminal"
         },
@@ -18,8 +19,8 @@
             "program": "intrusion_detection/__main__.py",
             "args": [
                 "train-model",
-                "~/Documents/Bachelor/runs/run-01/",
-                "~/Documents/Bachelor/runs/run-01/"
+                "~/Documents/Bachelor/runs/run-03/",
+                "~/Documents/Bachelor/runs/run-03/"
             ],
             "console": "integratedTerminal"
         },
