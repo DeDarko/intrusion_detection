@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 import typer
 from tensorflow import keras
-from tensorflow.keras.layers import LSTM, Dense, Dropout
+from tensorflow.keras.layers import LSTM, Dense
 from tensorflow.keras.models import Sequential
 
 from intrusion_detection import constants
