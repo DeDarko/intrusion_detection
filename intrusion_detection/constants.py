@@ -2,6 +2,8 @@ import enum
 
 # Data preprocessing.
 REAL_DATA_PATH = "data/live_logs_ids_bereinigt.csv"
+FAKE_DATA_PATH = "data/fake-data.csv"
+ATTACK_DATA_PATH = "data/attacks2.csv"
 MINIMAL_SEQUENCE_LENGTH = 2
 MAXIMAL_SEQUENCE_LENGTH = 30
 

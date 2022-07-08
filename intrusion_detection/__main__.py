@@ -19,7 +19,9 @@ intrusion_detection = typer.Typer()
 
 
 @intrusion_detection.command()
-def preprocess_data(target_directory: str):
+def preprocess_data(
+    target_directory: str, expand_sequences: bool = typer.Argument(True)
+):
     sequences = process_data.remove_sequence_min_occurences(
         sequences=process_data.extract_sequences(
             data=load_data.load_raw_data(path_to_data=constants.REAL_DATA_PATH),
@@ -36,8 +38,18 @@ def preprocess_data(target_directory: str):
         max_length=constants.MAXIMAL_SEQUENCE_LENGTH,
     )
 
+    if expand_sequences:
+        sequences_expanded = process_data.flatten_sequences(
+            list_of_sequences=[
+                process_data.expand_sequence(sequence=sequence)
+                for sequence in sequences_with_max_length
+            ]
+        )
+    else:
+        expand_sequences = sequences_with_max_length
+
     sequences_x, sequences_y = process_data.extract_and_remove_targets_from_sequence(
-        sequences=sequences_with_max_length
+        sequences=sequences_expanded
     )
 
     x = process_data.sequence_to_matrix(
@@ -78,6 +90,7 @@ def train_model(data_directory: str, target_directory: str):
             LSTM(
                 units=50,
             ),
+            Dense(units=200, activation="relu"),
             Dense(units=len(constants.EVENTS_MAP), activation="softmax"),
         ]
     )
@@ -104,9 +117,7 @@ def train_model(data_directory: str, target_directory: str):
 
 @intrusion_detection.command()
 def evaluate_perplexity(
-    path_to_model: str,
-    path_to_x: str,
-    path_to_y: str,
+    path_to_model: str, path_to_x: str, path_to_y: str, output_path: str
 ) -> None:
     with open(path_to_model, "rb") as model_handle:
         intrusion_detector = pickle.load(model_handle)
@@ -124,7 +135,41 @@ def evaluate_perplexity(
         for sample in range(data.shape[0])
     ]
 
-    print(np.array(average_perplexities).mean())
+    perplexity = np.array(average_perplexities)
+
+    np.save(perplexity, output_path)
+
+
+@intrusion_detection.command()
+def evaluate_perplexity_for_fake_data(
+    path_to_model: str, path_to_label_encoder: str, output_path: str
+):
+    with open(path_to_model, "rb") as model_handle:
+        intrusion_detector = pickle.load(model_handle)
+
+    with open(path_to_label_encoder, "rb") as label_encoder_handle:
+        label_encoder = pickle.load(label_encoder_handle)
+
+    sequences = process_data.extract_sequences(
+        data=load_data.load_raw_data(path_to_data=constants.ATTACK_DATA_PATH),
+    )
+
+    sequences_as_labels = [label_encoder.transform(sequence) for sequence in sequences]
+
+    average_perplexities = [
+        perplexity_computation.average_perplexity(
+            sequence=sequence,
+            model=intrusion_detector,
+        )
+        for sequence in sequences_as_labels
+    ]
+
+    perplexity = np.array(average_perplexities)
+
+    np.save(
+        output_path,
+        perplexity,
+    )
 
 
 if __name__ == "__main__":

@@ -94,3 +94,13 @@ def extract_and_remove_targets_from_sequence(
         [sequence[:-1] for sequence in sequences],
         [sequence[-1] for sequence in sequences],
     )
+
+
+def expand_sequence(
+    sequence: List[str],
+) -> List[List[str]]:
+    return [sequence[:max_elem] for max_elem in range(2, len(sequence) + 1)]
+
+
+def flatten_sequences(list_of_sequences: List[List[str]]) -> List[str]:
+    return [x for xs in list_of_sequences for x in xs]

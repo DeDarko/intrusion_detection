@@ -8,7 +8,8 @@
             "program": "intrusion_detection/__main__.py",
             "args": [
                 "preprocess-data",
-                "~/Documents/Bachelor/runs/run-04/"
+                "~/Documents/Bachelor/runs/run-07/",
+                "--no-expand-sequences"
             ],
             "console": "integratedTerminal"
         },
@@ -19,22 +20,44 @@
             "program": "intrusion_detection/__main__.py",
             "args": [
                 "train-model",
-                "~/Documents/Bachelor/runs/run-04/",
-                "~/Documents/Bachelor/runs/run-04/"
+                "~/Documents/Bachelor/runs/run-06/",
+                "~/Documents/Bachelor/runs/run-06/"
             ],
             "console": "integratedTerminal"
         },
         {
-            "name": "Compute Perplexity Train",
+            "name": "Compute Perplexity Test",
             "type": "python",
             "request": "launch",
             "program": "intrusion_detection/__main__.py",
             "args": [
                 "evaluate-perplexity",
-                "~/Documents/Bachelor/runs/run-04/intrusion_detector.pickle",
-                "~/Documents/Bachelor/runs/run-04/x_test.npy",
-                "~/Documents/Bachelor/runs/run-04/y_test.npy",
+                "~/Documents/Bachelor/runs/run-06/intrusion_detector.pickle",
+                "~/Documents/Bachelor/runs/run-06/x_test.npy",
+                "~/Documents/Bachelor/runs/run-06/y_test.npy",
+                "~/Documents/Bachelor/runs/run-06/perplexities_test.npy",
             ],
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "Compute Perplexity Attacks",
+            "type": "python",
+            "request": "launch",
+            "program": "intrusion_detection/__main__.py",
+            "args": [
+                "evaluate-perplexity-for-fake-data",
+                "~/Documents/Bachelor/runs/run-06/intrusion_detector.pickle",
+                "~/Documents/Bachelor/runs/run-06/label_encoder.pickle",
+                "~/Documents/Bachelor/runs/run-06/perplexities_attacks.npy",
+            ],
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "Create fake data",
+            "type": "python",
+            "request": "launch",
+            "program": "intrusion_detection/create_fake_data.py",
+            "args": [],
             "console": "integratedTerminal"
         },
     ]
