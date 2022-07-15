@@ -13,7 +13,7 @@ from tensorflow.keras.utils import pad_sequences
 
 from intrusion_detection import constants
 from intrusion_detection.data_parsing import load_data, process_data
-from intrusion_detection.model_evaluation import perplexity_computation
+from intrusion_detection.model_evaluation import verwirrungsgrad_computation
 
 intrusion_detection = typer.Typer()
 
@@ -116,7 +116,7 @@ def train_model(data_directory: str, target_directory: str):
 
 
 @intrusion_detection.command()
-def evaluate_perplexity(
+def evaluate_verwirrungsgrad(
     path_to_model: str, path_to_x: str, path_to_y: str, output_path: str
 ) -> None:
     with open(path_to_model, "rb") as model_handle:
@@ -127,21 +127,21 @@ def evaluate_perplexity(
 
     data = np.hstack((x, y[:, np.newaxis]))
 
-    average_perplexities = [
-        perplexity_computation.average_perplexity(
+    average_verwirrungsgrad = [
+        verwirrungsgrad_computation.average_verwirrungsgrad(
             sequence=data[sample, :],
             model=intrusion_detector,
         )
         for sample in range(data.shape[0])
     ]
 
-    perplexity = np.array(average_perplexities)
+    verwirrungsgrad = np.array(average_verwirrungsgrad)
 
-    np.save(perplexity, output_path)
+    np.save(verwirrungsgrad, output_path)
 
 
 @intrusion_detection.command()
-def evaluate_perplexity_for_fake_data(
+def evaluate_verwirrungsgrad_for_fake_data(
     path_to_model: str, path_to_label_encoder: str, output_path: str
 ):
     with open(path_to_model, "rb") as model_handle:
@@ -156,19 +156,19 @@ def evaluate_perplexity_for_fake_data(
 
     sequences_as_labels = [label_encoder.transform(sequence) for sequence in sequences]
 
-    average_perplexities = [
-        perplexity_computation.average_perplexity(
+    average_verwirrungsgrad = [
+        verwirrungsgrad_computation.average_verwirrungsgrad(
             sequence=sequence,
             model=intrusion_detector,
         )
         for sequence in sequences_as_labels
     ]
 
-    perplexity = np.array(average_perplexities)
+    verwirrungsgrad = np.array(average_verwirrungsgrad)
 
     np.save(
         output_path,
-        perplexity,
+        verwirrungsgrad,
     )
 
 

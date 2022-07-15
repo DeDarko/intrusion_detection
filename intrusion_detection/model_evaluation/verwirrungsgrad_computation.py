@@ -5,22 +5,22 @@ from intrusion_detection import constants
 from tensorflow import keras
 
 
-def average_perplexity(sequence: np.ndarray, model: keras.Model) -> float:
+def average_verwirrungsgrad(sequence: np.ndarray, model: keras.Model) -> float:
     non_padded_sequence = remove_padding(list(sequence))
 
-    total_perplexity = 0
+    total_verwirrungsgrad = 0
 
     for current_index in range(len(non_padded_sequence) - 1):
         relevant_sequence = non_padded_sequence[: (current_index + 1)]
         target_event = non_padded_sequence[current_index + 1]
-        total_perplexity += compute_single_perplexity(
+        total_verwirrungsgrad += compute_single_verwirrungsgrad(
             sequence=relevant_sequence, actual_event=target_event, model=model
         )
 
-    return total_perplexity / (len(sequence) - 1)
+    return total_verwirrungsgrad / (len(sequence) - 1)
 
 
-def compute_single_perplexity(sequence: List, actual_event: int, model: keras.Model):
+def compute_single_verwirrungsgrad(sequence: List, actual_event: int, model: keras.Model):
     predicted_event_distribution = create_single_prediction(
         sequence=sequence, model=model
     )
@@ -40,4 +40,4 @@ def create_single_prediction(sequence: List, model: keras.Model) -> List:
 
 
 def remove_padding(sequence: List) -> List:
-    return list(filter(lambda x: x != 8, sequence))
+    return list(filter(lambda x: x != (len(constants.EVENTS_MAP)+1.0), sequence))
